@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any, Dict, List
 import esper
 
 from src.create.i_enemy import create_enemy
@@ -9,9 +9,22 @@ from src.ecs.components.c_enemy_spawner_event import EnemySpawnerEvent
 
     
 def system_spawner(world: esper.World, 
-           spawner: CEnemySpawner,
+           level_config: Dict[str, Any], 
+           enemies_config: Dict[str, Any],
            elapsed_time: float
            ) -> None:
+    
+    spawner = world.get_component(CEnemySpawner)
+    if spawner:
+        spawner = spawner[0][1]
+    else:
+        spawner = None
+
+    if not spawner:
+        entity=world.create_entity()
+        spawner = CEnemySpawner.from_dict(level_config, enemies_config)
+        world.add_component(entity, spawner)
+
     if not spawner.spawn_events:
         return
     events_to_process = [event for event in spawner.spawn_events if event.time <= elapsed_time]

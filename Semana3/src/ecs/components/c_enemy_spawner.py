@@ -22,7 +22,6 @@ class CEnemySpawner:
         
         enemies = []
         for enemy_type, config in enemies_config.items():
-            # Create enemy based on type
             if enemy_type == "Hunter":
                 enemies.append(Enemy(
                     type=enemy_type,
@@ -34,7 +33,6 @@ class CEnemySpawner:
                     distance_start_return=config.get("distance_start_return", 0)
                 ))
             else:
-                # Regular asteroid enemy
                 enemies.append(Enemy(
                     type=enemy_type,
                     sprite_image=config["image"],

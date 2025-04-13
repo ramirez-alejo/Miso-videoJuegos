@@ -20,15 +20,15 @@ def system_screen_bounce(world: esper.World, screen: pygame.Surface):
         )
 
         if enemy_rect.left < 0:
-            velocity.speed.x *= -1  # Reverse horizontal velocity
-            transform.position.x = 0  # Place at boundary
+            velocity.speed.x *= -1
+            transform.position.x = 0
         elif enemy_rect.right > screen_width:
-            velocity.speed.x *= -1  # Reverse horizontal velocity
-            transform.position.x = screen_width - surface.area.width  # Place at boundary
+            velocity.speed.x *= -1
+            transform.position.x = screen_width - surface.area.width 
             
         if enemy_rect.top < 0:
-            velocity.speed.y *= -1  # Reverse vertical velocity
-            transform.position.y = 0  # Place at boundary
+            velocity.speed.y *= -1 
+            transform.position.y = 0 
         elif enemy_rect.bottom > screen_height:
-            velocity.speed.y *= -1  # Reverse vertical velocity
-            transform.position.y = screen_height - surface.area.height  # Place at boundary
+            velocity.speed.y *= -1 
+            transform.position.y = screen_height - surface.area.height 

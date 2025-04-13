@@ -19,7 +19,7 @@ from src.ecs.systems.s_explosion import system_explosion
 
 # Add the root directory to path to be able to import config_loader
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-from config_loader import get_window_config, get_enemies_config, get_level_config, get_player_config, get_bullet_config, get_explosion_config
+from config_loader import get_window_config, get_enemies_config, get_level_config, get_player_config, get_bullet_config
 
 from src.ecs.systems.s_movement import system_movement
 from src.ecs.systems.s_rendering import system_rendering
@@ -102,7 +102,8 @@ class GameEngine:
         self.player_entity = create_player(
             self.ecs_world,
             self.player_config,
-            pygame.Vector2(player_spawn["x"], player_spawn["y"])
+            pygame.Vector2(player_spawn["x"], player_spawn["y"]),
+            self.level_config
         )
 
     def _calculate_time(self):
@@ -123,7 +124,7 @@ class GameEngine:
         system_player_input(self.ecs_world, self.bullet_config, self.max_bullets)
         
         # Spawn enemies
-        system_spawner(self.ecs_world, self.enemySpawner, self.time)
+        system_spawner(self.ecs_world, self.level_config, self.enemies_config, self.time)
         
         # Handle hunter behavior
         system_hunter_behavior(self.ecs_world)
@@ -140,12 +141,8 @@ class GameEngine:
         system_screen_bounce(self.ecs_world, self.screen)
         
         # Handle collisions
-        player_spawn = self.level_config.get("player_spawn", {}).get("position", {"x": 100, "y": 100})
-        player_spawn_pos = pygame.Vector2(player_spawn["x"], player_spawn["y"])
-        player_frames = self.player_config.get("animations").get("number_frames", 1)
-        
-        # Handle player-enemy collisions
-        system_player_enemy_collision(self.ecs_world, player_spawn_pos, player_frames)
+        system_player_enemy_collision(self.ecs_world)
+        system_bullet_enemy_collision(self.ecs_world)
 
         # Handle animation
         system_animation(self.ecs_world, self.delta_time)
