@@ -29,3 +29,6 @@ def get_player_config():
 
 def get_bullet_config():
     return load_config("bullet.json")
+
+def get_explosion_config():
+    return load_config("explosion.json")

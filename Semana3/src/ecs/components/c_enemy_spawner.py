@@ -22,12 +22,24 @@ class CEnemySpawner:
         
         enemies = []
         for enemy_type, config in enemies_config.items():
-            
-            enemies.append(Enemy(
-                type=enemy_type,
-                sprite_image=config["image"],
-                velocity_min=config["velocity_min"],
-                velocity_max=config["velocity_max"],
-            ))
+            # Create enemy based on type
+            if enemy_type == "Hunter":
+                enemies.append(Enemy(
+                    type=enemy_type,
+                    sprite_image=config["image"],
+                    animations=config.get("animations"),
+                    velocity_chase=config.get("velocity_chase", 0),
+                    velocity_return=config.get("velocity_return", 0),
+                    distance_start_chase=config.get("distance_start_chase", 0),
+                    distance_start_return=config.get("distance_start_return", 0)
+                ))
+            else:
+                # Regular asteroid enemy
+                enemies.append(Enemy(
+                    type=enemy_type,
+                    sprite_image=config["image"],
+                    velocity_min=config.get("velocity_min", 0),
+                    velocity_max=config.get("velocity_max", 0)
+                ))
         
         return cls(spawn_events, enemies)

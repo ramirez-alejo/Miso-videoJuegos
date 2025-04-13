@@ -4,6 +4,7 @@ from src.ecs.components.c_transform import CTransform
 from src.ecs.components.c_surface import CSurface
 from src.ecs.components.c_tag_bullet import CTagBullet
 from src.ecs.components.c_tag_enemy import CTagEnemy
+from src.create.i_explosion import create_explosion
 
 def system_bullet_enemy_collision(world: esper.World):
     bullet_components = list(world.get_components(CTransform, CSurface, CTagBullet))
@@ -23,6 +24,14 @@ def system_bullet_enemy_collision(world: esper.World):
             if bullet_rect.colliderect(enemy_rect):
                 entities_to_remove.add(bullet_entity)
                 entities_to_remove.add(enemy_entity)
+                
+                # Create explosion at collision point
+                collision_pos = pygame.Vector2(
+                    enemy_transform.position.x + enemy_rect.width / 2,
+                    enemy_transform.position.y + enemy_rect.height / 2
+                )
+                create_explosion(world, collision_pos)
+                
                 print(f"Collision detected! Removing bullet {bullet_entity} and enemy {enemy_entity}")
                 break
     

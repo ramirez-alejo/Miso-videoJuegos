@@ -14,10 +14,12 @@ from src.ecs.systems.s_bullet_boundary import system_bullet_boundary
 from src.ecs.systems.s_bullet_enemy_collision import system_bullet_enemy_collision
 from src.ecs.systems.s_player_enemy_collision import system_player_enemy_collision
 from src.ecs.systems.s_player_state import system_player_state
+from src.ecs.systems.s_hunter_behavior import system_hunter_behavior
+from src.ecs.systems.s_explosion import system_explosion
 
 # Add the root directory to path to be able to import config_loader
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-from config_loader import get_window_config, get_enemies_config, get_level_config, get_player_config, get_bullet_config
+from config_loader import get_window_config, get_enemies_config, get_level_config, get_player_config, get_bullet_config, get_explosion_config
 
 from src.ecs.systems.s_movement import system_movement
 from src.ecs.systems.s_rendering import system_rendering
@@ -123,6 +125,9 @@ class GameEngine:
         # Spawn enemies
         system_spawner(self.ecs_world, self.enemySpawner, self.time)
         
+        # Handle hunter behavior
+        system_hunter_behavior(self.ecs_world)
+        
         # Update positions
         system_movement(self.ecs_world, self.delta_time)
 
@@ -135,17 +140,18 @@ class GameEngine:
         system_screen_bounce(self.ecs_world, self.screen)
         
         # Handle collisions
-        system_bullet_enemy_collision(self.ecs_world)
-        
-        # Get player spawn position
         player_spawn = self.level_config.get("player_spawn", {}).get("position", {"x": 100, "y": 100})
         player_spawn_pos = pygame.Vector2(player_spawn["x"], player_spawn["y"])
+        player_frames = self.player_config.get("animations").get("number_frames", 1)
         
         # Handle player-enemy collisions
-        system_player_enemy_collision(self.ecs_world, player_spawn_pos)
+        system_player_enemy_collision(self.ecs_world, player_spawn_pos, player_frames)
 
         # Handle animation
         system_animation(self.ecs_world, self.delta_time)
+
+        # Handle explosions
+        system_explosion(self.ecs_world, self.delta_time)
 
     def _draw(self):
         self.screen.fill(self.bg_color)
