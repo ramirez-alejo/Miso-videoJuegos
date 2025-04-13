@@ -19,7 +19,6 @@ def system_player_enemy_collision(world: esper.World):
         player_rect.topleft = (player_transform.position.x, player_transform.position.y)
 
         size = player_surface.area.size
-        size = (size[0] / player.frames, size[1])
         relative_position = pygame.Vector2(player.spawn_position.x - size[0], player.spawn_position.y - size[1] / 2)
         position = pygame.Vector2(relative_position.x, relative_position.y)
         

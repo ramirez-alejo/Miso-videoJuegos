@@ -6,7 +6,7 @@ import os
 from src.ecs.components.c_enemy_spawner import CEnemySpawner
 from src.ecs.systems.s_animation import system_animation
 from src.ecs.systems.s_enemy_spawner import system_spawner
-from src.create.i_player import create_player
+from src.ecs.systems.s_player_creator import system_create_player
 from src.ecs.systems.s_player_input import system_player_input
 from src.ecs.systems.s_input_command import system_input_command
 from src.ecs.systems.s_player_boundary import system_player_boundary
@@ -96,15 +96,7 @@ class GameEngine:
 
     def _create(self):             
         self.enemySpawner = CEnemySpawner.from_dict(self.level_config, self.enemies_config)
-        
-        # Create player entity at the spawn position from level config
-        player_spawn = self.level_config.get("player_spawn", {}).get("position", {"x": 100, "y": 100})
-        self.player_entity = create_player(
-            self.ecs_world,
-            self.player_config,
-            pygame.Vector2(player_spawn["x"], player_spawn["y"]),
-            self.level_config
-        )
+        self.player_entity, self.max_bullets = system_create_player(self.ecs_world)
 
     def _calculate_time(self):
         self.clock.tick(self.framerate)
