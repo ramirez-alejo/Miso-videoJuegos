@@ -1,6 +1,5 @@
 import esper
 import pygame
-from src.create.i_sprite import create_sprite
 from src.ecs.components.c_animation import CAnimation
 from src.ecs.components.c_explosion import CExplosion
 from src.ecs.components.c_surface import CSurface

@@ -4,7 +4,7 @@ class AnimationData:
         self.name = name
         self.start = start
         self.end = end
-        self.frame_rate = frame_rate/frame_rate
+        self.frame_rate = 1.0/frame_rate
 
 
 class CAnimation:
@@ -28,3 +28,4 @@ class CAnimation:
             for anim in animation_config.get("list", [])
         ]
         return cls(number_frames, animation_data)
+    
