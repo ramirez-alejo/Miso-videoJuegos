@@ -10,7 +10,8 @@ def create_sprite(entity: int,
                     sprite_image: str,
                     position: pygame.Vector2 = pygame.Vector2(100, 100),
                     velocity: pygame.Vector2 = pygame.Vector2(100, 100),
-                    frames_number: int = 1) -> None:
+                    frames_number: int = 1,
+                    patrol_type: str = '') -> None:
     
     sprite = ServiceLocator.images_service.get(sprite_image)
     size = sprite.get_size()

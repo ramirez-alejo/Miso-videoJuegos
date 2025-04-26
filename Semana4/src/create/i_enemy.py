@@ -19,7 +19,9 @@ def create_enemy(world: esper.World, enemy: Enemy, position: pygame.Vector2) -> 
             sprite_image=enemy.sprite_image,
             position=position,
             velocity=pygame.Vector2(0, 0),
-            frames_number=enemy.animations["number_frames"] if hasattr(enemy, "animations") else 1
+            frames_number=enemy.animations["number_frames"] if hasattr(enemy, "animations") else 1,
+            patrol_type=enemy.patrol_type,
+            
         )
         
         world.add_component(enemy_entity, CHunter(
@@ -28,7 +30,10 @@ def create_enemy(world: esper.World, enemy: Enemy, position: pygame.Vector2) -> 
             distance_start_return=enemy.distance_start_return,
             velocity_chase=enemy.velocity_chase,
             velocity_return=enemy.velocity_return,
-            sound=enemy.sound
+            sound=enemy.sound,
+            patrol_distance=enemy.patrol_distance,
+            velocity_patrol=enemy.velocity_patrol,
+            patrol_type=enemy.patrol_type
         ))
         
         if hasattr(enemy, "animations"):

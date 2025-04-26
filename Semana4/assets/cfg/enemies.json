@@ -46,6 +46,8 @@
         "velocity_return": 100,
         "distance_start_chase": 100,
         "distance_start_return": 200,
-        "sound_chase": "assets/snd/ufo.ogg"
+        "sound_chase": "assets/snd/ufo.ogg",
+        "velocity_patrol": 50,
+        "distance_patrol": 45
     }
 }

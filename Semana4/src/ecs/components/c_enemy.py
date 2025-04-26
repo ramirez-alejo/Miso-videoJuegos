@@ -7,7 +7,9 @@ class Enemy:
                  animations: Optional[Dict[str, Any]] = None,
                  velocity_chase: float = 0, velocity_return: float = 0,
                  distance_start_chase: float = 0, distance_start_return: float = 0,
-                 sound: str = None) -> None:
+                 sound: str ='',
+                 velocity_patrol=1, patrol_type="horizontal", distance_patrol=100,
+                 ) -> None:
         self.type = type
         self.velocity_min = velocity_min
         self.velocity_max = velocity_max
@@ -18,3 +20,6 @@ class Enemy:
         self.distance_start_chase = distance_start_chase
         self.distance_start_return = distance_start_return
         self.sound = sound
+        self.velocity_patrol = velocity_patrol
+        self.patrol_type = patrol_type
+        self.patrol_distance = distance_patrol

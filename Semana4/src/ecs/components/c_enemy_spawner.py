@@ -18,6 +18,7 @@ class CEnemySpawner:
                 time=event_dict["time"],
                 enemy_type=event_dict["enemy_type"],
                 position = pygame.Vector2(event_dict["position"]["x"], event_dict["position"]["y"]),
+                patrol_type=event_dict.get("patrol_type", '')
             ))
         
         enemies = []
@@ -32,6 +33,9 @@ class CEnemySpawner:
                     distance_start_chase=config.get("distance_start_chase", 0),
                     distance_start_return=config.get("distance_start_return", 0),
                     sound=config.get("sound_chase", None),
+                    velocity_patrol=config.get("velocity_patrol", 1),
+                    distance_patrol=config.get("distance_patrol", 100),
+                    patrol_type=config.get("patrol_type", "horizontal"),
                 ))
             else:
                 enemies.append(Enemy(

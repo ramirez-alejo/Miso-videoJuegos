@@ -31,6 +31,8 @@ class HunterBehaviorSystem:
             
             if hunter.state == HunterState.IDLE:
                 self._handle_idle_state(hunter, velocity, animation)
+            elif hunter.state == HunterState.PATROLLING:
+                self._handle_patrol_state(hunter, current_position, velocity, animation)
             elif hunter.state == HunterState.CHASING:
                 self._handle_chase_state(hunter, current_position, velocity, animation)
             elif hunter.state == HunterState.RETURNING:
@@ -41,22 +43,56 @@ class HunterBehaviorSystem:
     
     def _update_state(self, hunter: CHunter, current_position: pygame.Vector2):
         distance_to_player = current_position.distance_to(self.player_position)
-        distance_to_origin = current_position.distance_to(hunter.origin_position)
         
-        if hunter.state != HunterState.RETURNING and distance_to_origin > hunter.distance_start_return:
-            hunter.state = HunterState.RETURNING
-        elif hunter.state == HunterState.IDLE and distance_to_player < hunter.distance_start_chase:
-            ServiceLocator.sounds_service.play(hunter.sound)
-            hunter.state = HunterState.CHASING
-        elif hunter.state == HunterState.RETURNING and distance_to_origin < 5:
-            hunter.state = HunterState.IDLE
+        if hunter.state == HunterState.PATROLLING or hunter.state == HunterState.IDLE:
+            if distance_to_player < hunter.distance_start_chase:
+                ServiceLocator.sounds_service.play(hunter.sound)
+                hunter.state = HunterState.CHASING
+                hunter.chase_start_position = pygame.Vector2(current_position)
+        
+        elif hunter.state == HunterState.CHASING:
+            if distance_to_player > hunter.distance_start_return:
+                hunter.state = HunterState.RETURNING
+        
+        elif hunter.state == HunterState.RETURNING:
+            distance_to_chase_start = current_position.distance_to(hunter.chase_start_position)
+            if distance_to_chase_start < 5:
+                hunter.state = HunterState.PATROLLING
     
     def _handle_idle_state(self, hunter: CHunter, velocity: CVelocity, animation: CAnimation):
         velocity.speed = pygame.Vector2(0, 0)
         self._set_animation(animation, 1)
     
+    def _handle_patrol_state(self, hunter: CHunter, current_position: pygame.Vector2, 
+                            velocity: CVelocity, animation: CAnimation):
+        patrol_direction = pygame.Vector2(0, 0)
+        
+        if hunter.patrol_type == "horizontal":
+            if current_position.x >= hunter.origin_position.x + hunter.patrol_distance:
+                hunter.patrol_direction = -1
+            elif current_position.x <= hunter.origin_position.x - hunter.patrol_distance:
+                hunter.patrol_direction = 1
+                
+            patrol_direction.x = hunter.patrol_direction
+            
+        elif hunter.patrol_type == "vertical":
+            if current_position.y >= hunter.origin_position.y + hunter.patrol_distance:
+                hunter.patrol_direction = -1
+            elif current_position.y <= hunter.origin_position.y - hunter.patrol_distance:
+                hunter.patrol_direction = 1
+                
+            patrol_direction.y = hunter.patrol_direction
+        
+        velocity.speed = patrol_direction * hunter.velocity_patrol
+        self._set_animation(animation, 0)
+    
     def _handle_chase_state(self, hunter: CHunter, current_position: pygame.Vector2, 
                            velocity: CVelocity, animation: CAnimation):
+        
+        if current_position.distance_to(hunter.chase_start_position) > hunter.distance_start_return:
+            hunter.state = HunterState.RETURNING
+            return
+
         direction = self.player_position - current_position
         if direction.magnitude() > 0:
             direction = direction.normalize()
@@ -66,7 +102,7 @@ class HunterBehaviorSystem:
     
     def _handle_return_state(self, hunter: CHunter, current_position: pygame.Vector2, 
                             velocity: CVelocity, animation: CAnimation):
-        direction = hunter.origin_position - current_position
+        direction = hunter.chase_start_position - current_position
         if direction.magnitude() > 0:
             direction = direction.normalize()
         

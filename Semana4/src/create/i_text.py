@@ -30,7 +30,7 @@ def create_special_text(world: esper.World, screen_width: int, screen_height: in
 def create_percentage_text(world: esper.World, screen_width: int, screen_height: int) -> int:
     
     return world.create_entity(
-        CText("100%", pygame.Vector2(25, screen_height - 20), 
+        CText("0%", pygame.Vector2(25, screen_height - 20), 
               8, pygame.Color(0, 255, 0))
     )
 

@@ -25,6 +25,6 @@ def create_player(world: esper.World, player_config, position: pygame.Vector2, l
     world.add_component(player_entity, CAnimation.from_dict(player_config["animations"]))
     world.add_component(player_entity, CPlayerState())
     world.add_component(player_entity, CInputCommand())
-    world.add_component(player_entity, CSpecialAbility(cooldown_time=5.0))
+    world.add_component(player_entity, CSpecialAbility(cooldown_time=15.0))
     
     return player_entity

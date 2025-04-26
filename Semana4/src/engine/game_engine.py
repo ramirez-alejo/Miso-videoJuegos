@@ -61,17 +61,11 @@ class GameEngine:
         self.delta_time = 0
 
         self.ecs_world = esper.World()
-        
         self.enemies_config = get_enemies_config()
-        
         self.level_config = get_level_config("level_01")
-        
         self.player_config = get_player_config()
-        
         self.bullet_config = get_bullet_config()
-        
         self.max_bullets = self.level_config.get("player_spawn", {}).get("max_bullets", 4)
-
         self.enemySpawner = None
         self.player_entity = None
         self.time = 0
@@ -115,7 +109,6 @@ class GameEngine:
         system_game_state(self.ecs_world, self.screen_width, self.screen_height)
         
         for _, game_state in self.ecs_world.get_component(CGameState):
-            # Skip other systems if game is paused
             if game_state.state == GameState.PAUSED:
                 return
         

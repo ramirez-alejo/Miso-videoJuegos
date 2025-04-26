@@ -42,7 +42,7 @@ def system_special_ability(world: esper.World, delta_time: float, bullet_config)
                 transform.position.y + (surface.area.height / 2)
             )
             
-            for angle in range(0, 360, 15):
+            for angle in range(15, 375, 30):
                 radians = math.radians(angle)
                 target_x = player_center.x + 100 * math.cos(radians)
                 target_y = player_center.y + 100 * math.sin(radians)
