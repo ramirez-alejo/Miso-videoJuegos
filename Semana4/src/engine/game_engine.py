@@ -4,9 +4,11 @@ import sys
 import os
 
 from src.ecs.components.c_enemy_spawner import CEnemySpawner
+from src.ecs.components.c_game_state import CGameState, GameState
 from src.ecs.systems.s_animation import system_animation
 from src.ecs.systems.s_enemy_spawner import system_spawner
 from src.ecs.systems.s_player_creator import system_create_player
+from src.create.i_text import create_game_text
 from src.ecs.systems.s_player_input import system_player_input
 from src.ecs.systems.s_input_command import system_input_command
 from src.ecs.systems.s_player_boundary import system_player_boundary
@@ -16,6 +18,9 @@ from src.ecs.systems.s_player_enemy_collision import system_player_enemy_collisi
 from src.ecs.systems.s_player_state import system_player_state
 from src.ecs.systems.s_hunter_behavior import system_hunter_behavior
 from src.ecs.systems.s_explosion import system_explosion
+from src.ecs.systems.s_text_rendering import system_text_rendering
+from src.ecs.systems.s_special_ability import system_special_ability
+from src.ecs.systems.s_game_state import system_game_state
 
 # Add the root directory to path to be able to import config_loader
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
@@ -30,14 +35,11 @@ class GameEngine:
     def __init__(self) -> None:
         pygame.init()
         
-        # Load window configuration
         self.window_config = get_window_config()
         
-        # Get screen size from config
         self.screen_width = self.window_config.get("size", {}).get("w", 640)
         self.screen_height = self.window_config.get("size", {}).get("h", 360)
         
-        # Get background color from config
         bg_color = self.window_config.get("bg_color", {})
         self.bg_color = (
             bg_color.get("r", 0),
@@ -45,38 +47,29 @@ class GameEngine:
             bg_color.get("b", 0)
         )
         
-        # Get framerate from config
         self.framerate = self.window_config.get("framerate", 60)
         
-        # Create the screen with configured dimensions
         self.screen = pygame.display.set_mode(
             (self.screen_width, self.screen_height), 
             pygame.SCALED
         )
         
-        # Set the window title
         pygame.display.set_caption(self.window_config.get("title", "Game"))
         
         self.clock = pygame.time.Clock()
         self.is_running = False
         self.delta_time = 0
 
-        # Initialize ECS world
         self.ecs_world = esper.World()
         
-        # Load enemy configurations
         self.enemies_config = get_enemies_config()
         
-        # Load level configuration
         self.level_config = get_level_config("level_01")
         
-        # Load player configuration
         self.player_config = get_player_config()
         
-        # Load bullet configuration
         self.bullet_config = get_bullet_config()
         
-        # Get max bullets from level config
         self.max_bullets = self.level_config.get("player_spawn", {}).get("max_bullets", 4)
 
         self.enemySpawner = None
@@ -97,9 +90,17 @@ class GameEngine:
     def _create(self):             
         self.enemySpawner = CEnemySpawner.from_dict(self.level_config, self.enemies_config)
         self.player_entity, self.max_bullets = system_create_player(self.ecs_world)
+        
+        create_game_text(self.ecs_world, self.screen_width, self.screen_height)
+        
+        self.game_state_entity = self.ecs_world.create_entity(CGameState())
 
     def _calculate_time(self):
         self.clock.tick(self.framerate)
+        if self.ecs_world.component_for_entity(self.game_state_entity, CGameState).state == GameState.PAUSED:
+            self.delta_time = 0
+            return
+        
         self.delta_time = self.clock.get_time() / 1000.0
         self.time += self.delta_time
 
@@ -109,42 +110,42 @@ class GameEngine:
                 self.is_running = False
 
     def _update(self):
-        # Process input commands
         system_input_command(self.ecs_world)
         
-        # Process player input
+        system_game_state(self.ecs_world, self.screen_width, self.screen_height)
+        
+        for _, game_state in self.ecs_world.get_component(CGameState):
+            # Skip other systems if game is paused
+            if game_state.state == GameState.PAUSED:
+                return
+        
         system_player_input(self.ecs_world, self.bullet_config, self.max_bullets)
         
-        # Spawn enemies
+        system_special_ability(self.ecs_world, self.delta_time, self.bullet_config)
+        
         system_spawner(self.ecs_world, self.level_config, self.enemies_config, self.time)
         
-        # Handle hunter behavior
         system_hunter_behavior(self.ecs_world)
         
-        # Update positions
         system_movement(self.ecs_world, self.delta_time)
 
-        # Handle player movement
         system_player_state(self.ecs_world)
         
-        # Handle boundaries
         system_player_boundary(self.ecs_world, self.screen)
         system_bullet_boundary(self.ecs_world, self.screen)
         system_screen_bounce(self.ecs_world, self.screen)
         
-        # Handle collisions
         system_player_enemy_collision(self.ecs_world)
         system_bullet_enemy_collision(self.ecs_world)
 
-        # Handle animation
         system_animation(self.ecs_world, self.delta_time)
 
-        # Handle explosions
         system_explosion(self.ecs_world, self.delta_time)
 
     def _draw(self):
         self.screen.fill(self.bg_color)
         system_rendering(self.ecs_world, self.screen)
+        system_text_rendering(self.ecs_world, self.screen)
         pygame.display.flip()
 
     def _clean(self):

@@ -6,6 +6,7 @@ from src.ecs.components.c_player import CPlayer
 from src.ecs.components.c_player_state import CPlayerState
 from src.ecs.components.c_tag_player import CTagPlayer
 from src.ecs.components.c_input_command import CInputCommand
+from src.ecs.components.c_special_ability import CSpecialAbility
 
 def create_player(world: esper.World, player_config, position: pygame.Vector2, level_config=None) -> int:
     frames_number = player_config["animations"]["number_frames"]
@@ -19,11 +20,11 @@ def create_player(world: esper.World, player_config, position: pygame.Vector2, l
         frames_number=frames_number
     )
     
-    # Add player-specific components
     world.add_component(player_entity, CPlayer.from_dict(player_config, level_config))
     world.add_component(player_entity, CTagPlayer())
     world.add_component(player_entity, CAnimation.from_dict(player_config["animations"]))
     world.add_component(player_entity, CPlayerState())
     world.add_component(player_entity, CInputCommand())
+    world.add_component(player_entity, CSpecialAbility(cooldown_time=5.0))
     
     return player_entity

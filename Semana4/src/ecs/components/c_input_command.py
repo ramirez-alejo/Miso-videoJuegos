@@ -6,6 +6,8 @@ class PlayerAction(Enum):
     PLAYER_UP = auto()
     PLAYER_DOWN = auto()
     PLAYER_FIRE = auto()
+    PLAYER_SPECIAL = auto()
+    PLAYER_PAUSE = auto()
 
 class CInputCommand:
     def __init__(self) -> None:
