@@ -48,7 +48,9 @@ def system_special_ability(world: esper.World, delta_time: float, bullet_config)
                 target_y = player_center.y + 100 * math.sin(radians)
                 target_pos = pygame.Vector2(target_x, target_y)
                 
-                create_bullet(world, bullet_config, player_center, target_pos)
+                create_bullet(world, bullet_config, player_center, target_pos,
+                              'assets/img/bullet_especial.png',
+                              'assets/snd/laser_special.ogg')
             
             ServiceLocator.sounds_service.play("assets/snd/laser_special.ogg")
             

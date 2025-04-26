@@ -14,7 +14,7 @@ def create_game_title(world: esper.World, screen_width: int, screen_height: int)
 
 def create_controls_text(world: esper.World, screen_width: int, screen_height: int) -> int:
     return world.create_entity(
-        CText("Controles: Flechas, click normal, click derecho con balas en el mundo", 
+        CText("Controles: Flechas, Disparo click normal, Disparo especial click derecho", 
               pygame.Vector2(20, 50), 
               8, 
               pygame.Color(255, 255, 0))
