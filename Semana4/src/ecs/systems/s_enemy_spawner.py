@@ -38,4 +38,4 @@ def _spawn_enemy(world: esper.World, event: EnemySpawnerEvent, enemies: List[Ene
     
     if matching_enemies:
         enemy = matching_enemies[0]
-        create_enemy(world, enemy, event.position)
+        create_enemy(world, enemy, event.position, event.patrol_type)

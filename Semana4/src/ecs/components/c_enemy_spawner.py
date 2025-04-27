@@ -35,7 +35,6 @@ class CEnemySpawner:
                     sound=config.get("sound_chase", None),
                     velocity_patrol=config.get("velocity_patrol", 1),
                     distance_patrol=config.get("distance_patrol", 100),
-                    patrol_type=config.get("patrol_type", "horizontal"),
                 ))
             else:
                 enemies.append(Enemy(

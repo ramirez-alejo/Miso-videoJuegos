@@ -14,7 +14,7 @@
                 "x": 560,
                 "y": 180
             },
-            "patrol_type": "horizontal"
+            "patrol_type": "vertical"
         },
         {
             "time": 0.0,
@@ -23,7 +23,7 @@
                 "x": 305,
                 "y": 300
             },
-            "patrol_type": "vertical"
+            "patrol_type": "horizontal"
         },
         {
             "time": 0.0,
