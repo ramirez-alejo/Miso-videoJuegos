@@ -8,7 +8,7 @@ if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
     BASE_PATH = sys._MEIPASS
 else:
     # Running in normal Python environment
-    BASE_PATH = os.path.dirname(__file__)
+    BASE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 CONFIG_PATH = os.path.join(BASE_PATH, "assets", "cfg")
 
@@ -17,6 +17,7 @@ def load_config(filename):
     try:
         with open(filepath, 'r') as file:
             config = json.load(file)
+            print(f"Successfully loaded config: {filepath}")
             return config
     except FileNotFoundError:
         print(f"Configuration file not found: {filepath}")

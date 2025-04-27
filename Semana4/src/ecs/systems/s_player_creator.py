@@ -1,6 +1,6 @@
 import esper
 import pygame
-from config_loader import get_player_config, get_level_config
+from src.config_loader import get_player_config, get_level_config
 from src.create.i_player import create_player
 from src.ecs.components.c_transform import CTransform
 from src.ecs.components.c_surface import CSurface

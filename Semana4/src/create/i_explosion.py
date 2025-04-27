@@ -3,7 +3,7 @@ import pygame
 from src.ecs.components.c_animation import CAnimation
 from src.ecs.components.c_explosion import CExplosion
 from src.ecs.components.c_surface import CSurface
-from config_loader import get_explosion_config
+from src.config_loader import get_explosion_config
 from src.engine.service_locator import ServiceLocator
 
 def create_explosion(world: esper.World, position: pygame.Vector2) -> int:

@@ -22,9 +22,8 @@ from src.ecs.systems.s_text_rendering import system_text_rendering
 from src.ecs.systems.s_special_ability import system_special_ability
 from src.ecs.systems.s_game_state import system_game_state
 
-# Add the root directory to path to be able to import config_loader
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-from config_loader import get_window_config, get_enemies_config, get_level_config, get_player_config, get_bullet_config
+# Import config loader from new location
+from src.config_loader import get_window_config, get_enemies_config, get_level_config, get_player_config, get_bullet_config
 
 from src.ecs.systems.s_movement import system_movement
 from src.ecs.systems.s_rendering import system_rendering
