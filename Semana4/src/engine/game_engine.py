@@ -1,3 +1,4 @@
+import asyncio
 import pygame
 import esper
 import sys
@@ -48,9 +49,14 @@ class GameEngine:
         
         self.framerate = self.window_config.get("framerate", 60)
         
+        # Modified display setup for compatibility with web (pygbag)
+        flags = pygame.SCALED
+        if hasattr(pygame, 'FULLSCREEN') and 'PYGBAG' in os.environ:
+            flags = 0  # Don't use SCALED in web environment
+            
         self.screen = pygame.display.set_mode(
             (self.screen_width, self.screen_height), 
-            pygame.SCALED
+            flags
         )
         
         pygame.display.set_caption(self.window_config.get("title", "Game"))
@@ -70,7 +76,7 @@ class GameEngine:
         self.time = 0
 
        
-    def run(self) -> None:
+    async def run(self) -> None:
         self._create()
         self.is_running = True
         while self.is_running:
@@ -78,6 +84,7 @@ class GameEngine:
             self._process_events()
             self._update()
             self._draw()
+            await asyncio.sleep(0)
         self._clean()
 
     def _create(self):             
